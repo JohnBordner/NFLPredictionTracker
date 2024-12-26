@@ -1,0 +1,23 @@
+# Ignore WebClientConfig.java
+src/main/java/com/johnbordner/NFLhypoBet/config/WebClientConfig.java
+
+
+# Ignore application.properties
+src/main/resources/application.properties
+
+# Ignore build directories
+target/
+build/
+
+
+# Ignore compiled Java files
+*.class
+
+# Ignore IntelliJ IDEA files
+.idea/
+*.iml
+
+# Ignore Maven wrapper files
+.mvn/
+!/.mvn/wrapper/maven-wrapper.jar
+

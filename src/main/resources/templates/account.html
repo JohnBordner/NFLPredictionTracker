@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Account Page</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+
+            align-items: center;
+        }
+
+        h1, h2 {
+            color: #333;
+        }
+
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        a:hover {
+            background-color: #0056b3;
+
+        }
+
+        .stats-container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            margin-top: 20px;
+            width: 80%;
+            max-width: 600px;
+
+        }
+
+        .stats-container h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .stats-container p {
+            margin: 5px 0;
+            color: #555;
+
+        }
+
+        table {
+            width: 80%;
+            margin-top: 20px;
+            border-collapse: collapse;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        head {
+            background-color: #007bff;
+            color: white;
+
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+
+        }
+
+        th {
+            font-weight: bold;
+        }
+
+        tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        td {
+            color: #555;
+
+        }
+
+        @media (max-width: 768px) {
+            table {
+                width: 100%;
+            }
+
+            th, td {
+                font-size: 14px;
+            }
+
+            a {
+                padding: 8px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<h1>Welcome, <span th:text="${#authentication.name}">User</span>!</h1>
+
+<div class="stats-container">
+    <h3>Prediction Stats</h3>
+    <p><strong>Wins:</strong> <span th:text="${wins}">0</span></p>
+    <p><strong>Losses:</strong> <span th:text="${losses}">0</span></p>
+    <p><strong>Win/Loss Ratio:</strong> <span th:text="${winLossRatio}">0.00</span></p>
+
+</div>
+
+<h2>Your Predictions</h2>
+
+<table>
+    <thead>
+    <tr>
+        <th>Game</th>
+        <th>Team Predicted</th>
+        <th>Date</th>
+        <th>Winner</th>
+        <th>Prediction Result</th>
+
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="prediction : ${predictions}">
+        <td>
+            <span th:text="${prediction.game.gameWeek} + ' (' + ${prediction.game.seasonType} + ') '"></span>
+            <span th:text="${prediction.game.away}"></span>
+            <span th:text="' at '"></span>
+            <span th:text="${prediction.game.home}"></span>
+            <span th:text="' - ' + ${prediction.game.season}"></span>
+        </td>
+        <td th:text="${prediction.predictedWinner}">Team Predicted</td>
+        <td th:text="${prediction.game.formattedGameDate}">Game Date</td>
+        <td th:text="${prediction.actualWinner}">Winner</td>
+        <td>
+            <span th:if="${prediction.game.gameStatus == 'Final' || prediction.game.gameStatus == 'Final/OT' || prediction.game.gameStatus == 'Completed'}"
+                th:text="${prediction.correct ? 'W' : 'L'}">Result</span>
+            <span th:if="${!(prediction.game.gameStatus == 'Final' || prediction.game.gameStatus == 'Final/OT' || prediction.game.gameStatus == 'Completed')}">Pending</span>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<a href="/">Back to NFL Games</a>
+
+</body>
+</html>

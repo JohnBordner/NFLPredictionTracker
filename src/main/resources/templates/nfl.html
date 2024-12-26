@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>NFL Games</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #0073e6;
+            color: white;
+            font-weight: bold;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .form-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .winner {
+            color: green;
+            font-weight: bold;
+        }
+
+        .loser {
+            color: red;
+            font-weight: bold;
+        }
+
+        button {
+            background-color: #0073e6;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 15px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-left: 10px;
+        }
+
+        button:hover {
+            background-color: #005bb5;
+        }
+
+        .link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: #0073e6;
+            text-decoration: none;
+        }
+
+        .link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<h1>NFL Games</h1>
+
+<table>
+    <thead>
+    <tr>
+        <th>Away Team</th>
+        <th>Home Team</th>
+        <th>Date</th>
+        <th>Time (EST)</th>
+        <th>Status</th>
+        <th>Score</th>
+        <th>Predictions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="game : ${games}">
+        <!-- Conditional styling for team names based on the score, winners are green, losers are red -->
+        <td th:text="${game.away}"
+            th:class="${game.awayScore < game.homeScore ? 'loser' : game.awayScore > game.homeScore ? 'winner' : ''}">
+        </td>
+        <td th:text="${game.home}"
+            th:class="${game.homeScore < game.awayScore ? 'loser' : game.homeScore > game.awayScore ? 'winner' : ''}">
+        </td>
+
+        <td th:text="${game.formattedGameDate}"></td>
+        <td th:text="${game.gameTime}"></td>
+        <td th:text="${game.gameStatus}"></td>
+
+        <td>
+            <span th:if="${game.gameStatus == 'Final' || game.gameStatus == 'Final/OT' || game.gameStatus == 'Completed'}"
+                  th:text="${game.awayScore + ' - ' + game.homeScore}"></span>
+            <span th:if="${game.gameStatus != 'Final' && game.gameStatus != 'Final/OT' && game.gameStatus != 'Completed'}">N/A</span>
+        </td>
+
+        <td th:if="${game.gameStatus == 'Scheduled'}">
+            <div class="form-container">
+                <form th:action="@{/index(gameWeek=${gameWeek}, seasonType=${seasonType}, season=${season})}" method="post">
+
+                <input type="hidden" name="gameId" th:value="${game.gameID}" />
+
+                    <label>
+                        <input type="radio" th:attr="name='predictedWinner' + ${game.gameID}" th:value="${game.away}" required />
+                        <span th:text="${game.away}"></span>
+                    </label>
+                    <label>
+                        <input type="radio" th:attr="name='predictedWinner' + ${game.gameID}" th:value="${game.home}" required />
+                        <span th:text="${game.home}"></span>
+                    </label>
+
+                    <button type="submit">Predict Winner</button>
+                </form>
+            </div>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<a class="link" href="/">Select Another Week</a>
+
+</body>
+</html>
